@@ -20,8 +20,6 @@ export default function signIn(options: StrapiAuthOptions) {
             headers.append("Content-Type", "application/json");
             if(options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
 
-            console.log(ctx)
-
             // Authenticate with Strapi
             const strapiResponse = await fetch(
                 `${options.strapiUrl}/api/auth/local`,

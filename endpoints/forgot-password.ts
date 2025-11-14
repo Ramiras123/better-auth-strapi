@@ -18,8 +18,6 @@ export default function forgotPassword(options: StrapiAuthOptions) {
             headers.append("Content-Type", "application/json");
             if(options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
 
-            console.log(email)
-
             // Authenticate with Strapi
             const strapiResponse = await fetch(
                 `${options.strapiUrl}/api/auth/forgot-password`,

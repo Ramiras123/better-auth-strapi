@@ -1,5 +1,5 @@
 import { BetterAuthClientPlugin } from "better-auth/client";
-import type { StrapiAuth } from ".";
+import type { StrapiAuth } from "./index.ts";
 
 export const strapiAuthClient = () => {
   return {

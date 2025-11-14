@@ -4,15 +4,48 @@
   "description": "A Better Auth plugin to authenticate with Strapi",
   "license": "MIT",
   "author": "@douweapausma",
-  "type": "commonjs",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "require": "./dist/client.cjs"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "better-auth": "^1.4.0-beta.20"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.4.0-beta.20"
+  },
+  "keywords": [
+    "better-auth",
+    "strapi",
+    "authentication",
+    "auth",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/douweapausma/better-auth-strapi"
   }
 }

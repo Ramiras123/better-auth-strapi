@@ -30,6 +30,3 @@ export const strapiAuth = (options: StrapiAuthOptions) => {
 };
 
 export type StrapiAuth = ReturnType<typeof strapiAuth>;
-
-// TODO
-// add remaining endpoints (password reset, etc.)
