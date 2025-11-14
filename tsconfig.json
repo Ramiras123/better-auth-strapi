@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -17,10 +17,7 @@
     "noEmit": true
   },
   "include": [
-    "index.ts",
-    "client.ts",
-    "endpoints/**/*",
-    "lib/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
