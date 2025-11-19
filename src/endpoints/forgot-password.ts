@@ -30,10 +30,7 @@ export default function forgotPassword(options: StrapiAuthOptions) {
 
             if (!strapiResponse.ok) {
                 const errorData = await strapiResponse.json();
-                return ctx.json(
-                    { error: errorData.message || "Invalid request" },
-                    { status: 401 }
-                );
+                return ctx.error("BAD_REQUEST", errorData.error);
             }
 
             const data = await strapiResponse.json();

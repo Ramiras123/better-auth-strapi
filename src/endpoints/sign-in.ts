@@ -31,11 +31,8 @@ export default function signIn(options: StrapiAuthOptions) {
             );
 
             if (!strapiResponse.ok) {
-                const errorData = await strapiResponse.json();
-                return ctx.json(
-                    { error: errorData.message || "Invalid credentials" },
-                    { status: 401 }
-                );
+                const errorData = await strapiResponse.json();                
+                return ctx.error("UNAUTHORIZED", errorData.error);
             }
 
             const strapiSession = await strapiResponse.json();
