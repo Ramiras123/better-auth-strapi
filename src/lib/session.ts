@@ -18,7 +18,9 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
 
         if (populateFields.length > 0) {
             const populateParams = new URLSearchParams();
-            Object.values(populateFields).forEach((field, index) => populateParams.append(`populate[${index}]`, field));
+            Object.values(populateFields).forEach((field, index) => {
+                populateParams.append(`populate[${index}]`, field.split('.')[0])
+            });
 
             const userResponse = await fetch(
                 `${options.strapiUrl}/api/users/me?${populateParams.toString()}`,
@@ -50,8 +52,12 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
     };
 
     Object.entries(options.userFieldsMap || {}).forEach(([betterAuthField, strapiField]) => {
-        if (strapiUser[strapiField] !== undefined) {
-            (user as any)[betterAuthField] = strapiUser[strapiField];
+        let newField = strapiUser;
+        const arr = strapiField.split(".");
+        while(arr.length && (newField = newField[arr.shift() || '']));
+
+        if (newField !== undefined) {
+            (user as any)[betterAuthField] = newField;
         }
     });
 
@@ -70,7 +76,7 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
     };
 
     // If specified, set the session cookie with custom session hook
-    if (options.sessionHook) {
+    if (typeof options.sessionHook === "function") {
         await setSessionCookie(ctx, await options.sessionHook({ session, user }));
     } else {
         await setSessionCookie(ctx, { session, user });
