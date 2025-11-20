@@ -2,6 +2,9 @@
 
 A [Better Auth](https://better-auth.com) plugin that enables authentication using [Strapi](https://strapi.io) as the backend.
 
+> [!WARNING]
+> This plugin is still in development and a work in progress, **do not** use it in production. It's not yet tested for vulnerabilities, and most likely not yet secure.
+
 ## Features
 
 - 🔐 Sign in with Strapi credentials
