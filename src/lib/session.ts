@@ -1,6 +1,5 @@
 import { generateId, GenericEndpointContext } from "better-auth";
 import { setSessionCookie } from "better-auth/cookies";
-import { z } from "zod";
 
 import type { StrapiAuthOptions } from "..";
 
