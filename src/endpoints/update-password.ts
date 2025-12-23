@@ -13,10 +13,11 @@ export default function updatePassword(options: StrapiAuthOptions) {
                 code: z.string(),
                 password: z.string(),
                 passwordConfirmation: z.string(),
+                callbackUrl: z.string().optional(),
             }),
         },
         async (ctx) => {
-            const { code, password, passwordConfirmation } = ctx.body;
+            const { code, password, passwordConfirmation, callbackUrl } = ctx.body;
             const headers = new Headers();
             headers.append("Content-Type", "application/json");
             if(options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
@@ -42,10 +43,20 @@ export default function updatePassword(options: StrapiAuthOptions) {
             if(options.signInAfterReset && strapiSession.user.confirmed) {
                 const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
 
-                return ctx.json({ user, session, strapiJwt });
+                return ctx.json({
+                    redirect: !!callbackUrl,
+                    url: callbackUrl,
+                    user,
+                    session,
+                    strapiJwt
+                });
             }
 
-            return ctx.json(strapiSession);
+            return ctx.json({
+                redirect: !!callbackUrl,
+                url: callbackUrl,
+                ...strapiSession,
+            });
         }
     )
 }
