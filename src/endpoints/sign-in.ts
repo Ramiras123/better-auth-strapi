@@ -12,11 +12,12 @@ export default function signIn(options: StrapiAuthOptions) {
             body: z.object({
                 identifier: z.string(),
                 password: z.string(),
+                remember: z.boolean().optional().default(false),
                 callbackUrl: z.string().optional(),
             }),
         },
         async (ctx) => {
-            const { identifier, password, callbackUrl } = ctx.body;
+            const { identifier, password, callbackUrl, remember } = ctx.body;
             const headers = new Headers();
             headers.append("Content-Type", "application/json");
             if (options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
@@ -45,7 +46,10 @@ export default function signIn(options: StrapiAuthOptions) {
                 redirect: !!callbackUrl,
                 url: callbackUrl,
                 user,
-                session,
+                session: {
+                    ...session,
+                    remember
+                },
                 strapiJwt, // Return Strapi JWT for making Strapi API calls
                 strapiRefreshToken
             });
