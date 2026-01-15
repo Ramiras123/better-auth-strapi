@@ -2,6 +2,7 @@ import signIn from "./sign-in";
 import signUp from "./sign-up";
 import forgotPassword from "./forgot-password";
 import updatePassword from "./update-password";
+import changePassword from './change-password';
 
 import type { StrapiAuthOptions } from "..";
 
@@ -11,5 +12,6 @@ export default function endpoints(options: StrapiAuthOptions) {
     signUp: signUp(options),
     forgotPassword: forgotPassword(options),
     updatePassword: updatePassword(options),
+    changePassword: changePassword(options)
   } as const;
 }
