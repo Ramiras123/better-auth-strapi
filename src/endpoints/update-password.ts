@@ -41,14 +41,15 @@ export default function updatePassword(options: StrapiAuthOptions) {
 
             // Set session cookie
             if(options.signInAfterReset && strapiSession.user.confirmed) {
-                const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
+                const { user, session, strapiJwt, strapiRefreshToken } = await setStrapiSession(strapiSession, options, ctx);
 
                 return ctx.json({
                     redirect: !!callbackUrl,
                     url: callbackUrl,
                     user,
                     session,
-                    strapiJwt
+                    strapiJwt,
+                    strapiRefreshToken
                 });
             }
 

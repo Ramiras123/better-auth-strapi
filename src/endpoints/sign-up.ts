@@ -31,11 +31,12 @@ export default function signUp(options: StrapiAuthOptions) {
                 return ctx.error("UNAUTHORIZED", errorData.error);
             }
 
-            const {user, jwt:strapiJwt} = await strapiResponse.json();
+            const {user, jwt:strapiJwt, refreshToken: strapiRefreshToken} = await strapiResponse.json();
 
             return ctx.json({
                 user,
-                strapiJwt // Return Strapi JWT for making Strapi API calls
+                strapiJwt, // Return Strapi JWT for making Strapi API calls
+                strapiRefreshToken
             });
         }
     );
