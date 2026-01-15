@@ -6,10 +6,11 @@ import type { StrapiAuthOptions } from "..";
 interface StrapiSession {
     user: any;
     jwt: string;
+    refreshToken?: string;
 }
 
 export const setStrapiSession = async (strapiSession: StrapiSession, options:StrapiAuthOptions, ctx: GenericEndpointContext) => {
-    const { user: strapiUser, jwt: strapiJwt } = strapiSession;
+    const { user: strapiUser, jwt: strapiJwt, refreshToken: strapiRefreshToken } = strapiSession;
 
     // Populate and fetch additional user fields if specified and not already included
     if (options.userFieldsMap) {
@@ -69,6 +70,7 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
         updatedAt: new Date(),
         token: sessionToken,
         strapiJwt,
+        strapiRefreshToken,
         userId: user.id,
         expiresAt,
         ipAddress: ctx.headers?.get("x-forwarded-for") || "",
@@ -82,5 +84,5 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
         await setSessionCookie(ctx, { session, user });
     }
 
-    return { user, session, strapiJwt };
+    return { user, session, strapiJwt, strapiRefreshToken };
 }

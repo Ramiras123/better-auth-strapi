@@ -19,7 +19,7 @@ export default function signIn(options: StrapiAuthOptions) {
             const { identifier, password, callbackUrl } = ctx.body;
             const headers = new Headers();
             headers.append("Content-Type", "application/json");
-            if(options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
+            if (options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
 
             // Authenticate with Strapi
             const strapiResponse = await fetch(
@@ -32,21 +32,22 @@ export default function signIn(options: StrapiAuthOptions) {
             );
 
             if (!strapiResponse.ok) {
-                const errorData = await strapiResponse.json();                
+                const errorData = await strapiResponse.json();
                 return ctx.error("UNAUTHORIZED", errorData.error);
             }
 
             const strapiSession = await strapiResponse.json();
 
             // Set session cookie
-            const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
+            const { user, session, strapiJwt, strapiRefreshToken } = await setStrapiSession(strapiSession, options, ctx);
 
             return ctx.json({
                 redirect: !!callbackUrl,
                 url: callbackUrl,
                 user,
                 session,
-                strapiJwt // Return Strapi JWT for making Strapi API calls
+                strapiJwt, // Return Strapi JWT for making Strapi API calls
+                strapiRefreshToken
             });
         }
     )
