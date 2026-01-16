@@ -9,7 +9,7 @@ interface StrapiSession {
     refreshToken?: string;
 }
 
-export const setStrapiSession = async (strapiSession: StrapiSession, options:StrapiAuthOptions, ctx: GenericEndpointContext) => {
+export const setStrapiSession = async (strapiSession: StrapiSession, options: StrapiAuthOptions, ctx: GenericEndpointContext) => {
     const { user: strapiUser, jwt: strapiJwt, refreshToken: strapiRefreshToken } = strapiSession;
 
     // Populate and fetch additional user fields if specified and not already included
@@ -54,16 +54,18 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
     Object.entries(options.userFieldsMap || {}).forEach(([betterAuthField, strapiField]) => {
         let newField = strapiUser;
         const arr = strapiField.split(".");
-        while(arr.length && (newField = newField[arr.shift() || '']));
+        while (arr.length && (newField = newField[arr.shift() || '']));
 
         if (newField !== undefined) {
             (user as any)[betterAuthField] = newField;
         }
     });
+    const dontRememberMe = ctx.body.remember === false;
 
     // Create session object - stateless, stored only in cookie
     const sessionToken = generateId();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    const expiresAt = dontRememberMe ? new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
+        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
     const session = {
         id: sessionToken,
         createdAt: new Date(),
@@ -79,9 +81,9 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options:Str
 
     // If specified, set the session cookie with custom session hook
     if (typeof options.sessionHook === "function") {
-        await setSessionCookie(ctx, await options.sessionHook({ session, user }));
+        await setSessionCookie(ctx, await options.sessionHook({ session, user }), ctx.body.remember === false);
     } else {
-        await setSessionCookie(ctx, { session, user });
+        await setSessionCookie(ctx, { session, user }, ctx.body.remember === false);
     }
 
     return { user, session, strapiJwt, strapiRefreshToken };

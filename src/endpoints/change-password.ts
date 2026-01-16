@@ -41,7 +41,6 @@ export default function changePassword(options: StrapiAuthOptions) {
 
 			const strapiSession = await strapiResponse.json();
 
-			// console.log(strapiSession)
 			const { user, session, strapiJwt, strapiRefreshToken } = await setStrapiSession(strapiSession, options, ctx);
 
 			return ctx.json({
