@@ -41,15 +41,14 @@ export default function changePassword(options: StrapiAuthOptions) {
 
 			const strapiSession = await strapiResponse.json();
 
-			const { user, session, strapiJwt, strapiRefreshToken } = await setStrapiSession(strapiSession, options, ctx);
+			const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
 
 			return ctx.json({
 				redirect: !!callbackUrl,
 				url: callbackUrl,
 				user,
 				session,
-				strapiJwt,
-				strapiRefreshToken
+				strapiJwt
 			});
 		}
 

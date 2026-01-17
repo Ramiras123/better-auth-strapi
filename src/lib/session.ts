@@ -65,14 +65,17 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options: St
     // Create session object - stateless, stored only in cookie
     const sessionToken = generateId();
     const expiresAt = dontRememberMe ? new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
-        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+    const accessTokenLifespan = options.accessTokenLifespan ? new Date(Date.now() + options.accessTokenLifespan)
+        : new Date(Date.now() + 30 * 60 * 1000) // 30 min
     const session = {
         id: sessionToken,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
         token: sessionToken,
         strapiJwt,
-        strapiRefreshToken,
+        remember: ctx.body.remember,
+        ...(options.refreshStrategy && { strapiRefreshToken, accessTokenLifespan }),
         userId: user.id,
         expiresAt,
         ipAddress: ctx.headers?.get("x-forwarded-for") || "",
@@ -81,10 +84,10 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options: St
 
     // If specified, set the session cookie with custom session hook
     if (typeof options.sessionHook === "function") {
-        await setSessionCookie(ctx, await options.sessionHook({ session, user }), ctx.body.remember === false);
+        await setSessionCookie(ctx, await options.sessionHook({ session, user }), dontRememberMe);
     } else {
-        await setSessionCookie(ctx, { session, user }, ctx.body.remember === false);
+        await setSessionCookie(ctx, { session, user }, dontRememberMe);
     }
 
-    return { user, session, strapiJwt, strapiRefreshToken };
+    return { user, session, strapiJwt };
 }
