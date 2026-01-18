@@ -1,6 +1,7 @@
 import { createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 
 import type { StrapiAuthOptions } from "..";
+import { setSessionCookie } from 'better-auth/cookies';
 
 export default function refreshJwtUpload(options: StrapiAuthOptions) {
 	return createAuthMiddleware(async (ctx) => {
@@ -12,6 +13,7 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				: new Date(accessTokenLifespan);
 			const tokenLife = options.accessTokenLifespan ? options.accessTokenLifespan
 				: 30 * 60 * 1000
+				
 			if (((lifespanDate.getTime() - Date.now() <= (tokenLife) / 2))) {
 				const refreshToken = sessionUser?.session.strapiRefreshToken
 				if (!refreshToken) {
@@ -37,15 +39,22 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 
 				const strapiSession = await strapiResponse.json();
 
+				const session = {
+					...sessionUser.session,
+					strapiJwt: strapiSession.jwt,
+					strapiRefreshToken: strapiSession.refreshToken,
+					accessTokenLifespan: options.accessTokenLifespan ? new Date(Date.now() + options.accessTokenLifespan)
+						: new Date(Date.now() + 30 * 60 * 1000) // 30 min
+				}
+
+				if (typeof options.sessionHook === "function") {
+					await setSessionCookie(ctx, await options.sessionHook({ session, user: sessionUser.user }));
+				} else {
+					await setSessionCookie(ctx, { session, user: sessionUser.user });
+				}
 				return ctx.json({
 					user: sessionUser.user,
-					session: {
-						...sessionUser.session,
-						strapiJwt: strapiSession.jwt,
-						strapiRefreshToken: strapiSession.refreshToken,
-						accessTokenLifespan: options.accessTokenLifespan ? new Date(Date.now() + options.accessTokenLifespan)
-							: new Date(Date.now() + 30 * 60 * 1000) // 30 min
-					}
+					session: session
 				});
 
 			}
