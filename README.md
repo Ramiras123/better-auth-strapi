@@ -17,7 +17,7 @@ A [Better Auth](https://better-auth.com) plugin that enables authentication usin
 ## Installation
 
 ```bash
-npm install better-auth-strapi
+npm install @ramiras123/better-auth-strapi
 ```
 
 ## Usage
