@@ -1,9 +1,8 @@
 {
 	"name": "better-auth-strapi",
 	"version": "0.1.1",
-	"description": "A Better Auth plugin to authenticate with Strapi",
-	"license": "MIT",
-	"author": "@douweapausma",
+	"description": "A Better Auth plugin to authenticate with Strapi and refreshToken",
+	"author": "@douweapausma and @ramiras123",
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -44,6 +43,6 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/douweapausma/better-auth-strapi"
+		"url": "https://github.com/ramiras123/better-auth-strapi"
 	}
 }

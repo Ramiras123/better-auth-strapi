@@ -1,7 +1,7 @@
 import { createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 
 import type { StrapiAuthOptions } from "..";
-import { setSessionCookie } from 'better-auth/cookies';
+import { deleteSessionCookie, setSessionCookie } from 'better-auth/cookies';
 
 export default function refreshJwtUpload(options: StrapiAuthOptions) {
 	return createAuthMiddleware(async (ctx) => {
@@ -13,10 +13,11 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				: new Date(accessTokenLifespan);
 			const tokenLife = options.accessTokenLifespan ? options.accessTokenLifespan
 				: 30 * 60 * 1000
-				
+
 			if (((lifespanDate.getTime() - Date.now() <= (tokenLife) / 2))) {
 				const refreshToken = sessionUser?.session.strapiRefreshToken
 				if (!refreshToken) {
+					deleteSessionCookie(ctx);
 					return ctx.error("BAD_REQUEST", {
 						message: "Missing refresh_token"
 					});
@@ -34,6 +35,7 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				);
 				if (!strapiResponse.ok) {
 					const errorData = await strapiResponse.json();
+					deleteSessionCookie(ctx);
 					return ctx.error("BAD_REQUEST", errorData.error);
 				}
 

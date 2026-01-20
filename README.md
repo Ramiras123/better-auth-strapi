@@ -154,7 +154,7 @@ MIT
 
 ## Author
 
-[@douweapausma](https://github.com/douweapausma)
+[@ramiras123](https://github.com/ramiras123)
 
 ## Contributing
 
