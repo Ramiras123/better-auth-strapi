@@ -37,6 +37,8 @@ export const auth = betterAuth({
       strapiUrl: "http://localhost:1337", // Your Strapi instance URL
       strapiToken: process.env.STRAPI_API_TOKEN, // Optional: API token for authenticated requests
       signInAfterReset: true, // Optional: Auto sign-in after password reset
+      refreshStrategy: false, // Optional: Choosing the token receipt method
+      accessTokenLifespan: 30*1000, // Optional: In milliseconds. Defines the lifetime of the jwt token
       userFieldsMap: {
         // Optional: Map additional Strapi user fields
         firstName: "firstName",
@@ -76,6 +78,8 @@ export const authClient = createAuthClient({
 const { data, error } = await authClient.strapiAuth.signUp({
   email: "user@example.com",
   password: "securePassword123",
+  username: "user",
+  remember: false // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
 });
 ```
 
@@ -85,6 +89,7 @@ const { data, error } = await authClient.strapiAuth.signUp({
 const { data, error } = await authClient.strapiAuth.signIn({
   identifier: "user@example.com", // Email or username
   password: "securePassword123",
+  remember: false // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
 });
 
 // The response includes the Strapi JWT for making authenticated Strapi API calls
@@ -110,6 +115,15 @@ const { data, error } = await authClient.strapiAuth.updatePassword({
   passwordConfirmation: "newSecurePassword123",
 });
 ```
+#### Change Password 
+
+```typescript
+const { data, error } = await authClient.strapiAuth.changePassword({
+  currentPassword: "oldSecurePassword123",
+  password: "newSecurePassword123",
+  passwordConfirmation: "newSecurePassword123",
+})
+```
 
 ## Configuration Options
 
@@ -122,6 +136,8 @@ const { data, error } = await authClient.strapiAuth.updatePassword({
 | `userFieldsMap` | `object` | No | Map additional Strapi user fields to Better Auth user object |
 | `signInAfterReset` | `boolean` | No | Automatically sign in users after password reset (default: `false`) |
 | `sessionHook` | `function` | No | Custom function to extend session data with additional information |
+| `refreshStrategy` | `boolean` | No | Choosing a refresh token strategyn |
+| `accessTokenLifespan` | `number` | No | Choosing the token lifetime for the refreshToken strategy at which the token will be updated. |
 
 ## Endpoints
 
@@ -131,6 +147,7 @@ The plugin provides the following authentication endpoints:
 - `POST /strapi-auth/sign-up` - Register a new user via Strapi
 - `POST /strapi-auth/forgot-password` - Request password reset
 - `POST /strapi-auth/update-password` - Reset password with code
+- `POST /strapi-auth/change-password` - Change password
 
 ## Strapi Setup
 
@@ -143,22 +160,17 @@ Ensure your Strapi instance has the following enabled:
    - `/api/auth/local/register` (sign up)
    - `/api/auth/forgot-password` (forgot password)
    - `/api/auth/reset-password` (reset password)
+   - `/api/auth/change-password`(change password)
+   - `/api/auth/refresh` (refresh jwt Token)
 
 ## TypeScript Support
 
 This plugin is written in TypeScript and provides full type definitions. All configuration options and API responses are fully typed.
 
-## License
-
-MIT
-
 ## Author
 
+[@douwepausma](https://github.com/douwepausma)
 [@ramiras123](https://github.com/ramiras123)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Links
 
