@@ -1,6 +1,6 @@
 {
 	"name": "@ramiras123/better-auth-strapi",
-	"version": "0.1.3-alpha",
+	"version": "0.1.4-alpha",
 	"description": "A Better Auth plugin to authenticate with Strapi and refreshToken",
 	"author": "@douweapausma and @ramiras123",
 	"type": "module",
@@ -39,7 +39,9 @@
 		"strapi",
 		"authentication",
 		"auth",
-		"plugin"
+		"plugin",
+		"refreshToken",
+		"remember"
 	],
 	"repository": {
 		"type": "git",
