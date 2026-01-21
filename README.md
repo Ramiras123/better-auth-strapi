@@ -111,10 +111,17 @@ if (data) {
 }
 ```
 
-#### Sign Out
+#### Sign Out (only default jwt token)
 
 ```typescript
-  await authClient.signOut() // This method only works for a regular strategy. There will be a separate endpoint for the refresh token.
+await authClient.signOut() // This method only works for a regular strategy. There will be a separate endpoint for the refresh token.
+```
+
+#### Logout
+```typescript
+await authClient.strapiAuth.logout({ // Only refresh token sign out
+	callbackUrl: "/" // required
+})
 ```
 
 #### Forgot Password
@@ -181,6 +188,7 @@ Ensure your Strapi instance has the following enabled:
    - `/api/auth/reset-password` (reset password)
    - `/api/auth/change-password`(change password)
    - `/api/auth/refresh` (refresh jwt Token)
+   - `/api/auth/logout` (refresh jwt sign out)
 
 ## TypeScript Support
 
