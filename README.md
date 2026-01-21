@@ -54,6 +54,16 @@ export const auth = betterAuth({
       },
     }),
   ],
+	session: {
+		expiresIn: 60 * 60 * 24 * 30, // 30 days
+		updateAge: 60 * 2,
+		disableSessionRefresh: true,
+		cookieCache: {
+			enabled: true,
+			maxAge: 60 * 60 * 24 * 30, // 30 day
+			strategy: "jwt", // Jwt strategy
+		}
+	},
 });
 ```
 
@@ -66,6 +76,9 @@ import { createAuthClient } from "better-auth/client";
 import { strapiAuthClient } from "better-auth-strapi/client";
 
 export const authClient = createAuthClient({
+	sessionOptions: {
+		refetchInterval: 5*60 // Checking the session on the client once every 5 min
+	},
   plugins: [strapiAuthClient()],
 });
 ```
@@ -96,6 +109,12 @@ const { data, error } = await authClient.strapiAuth.signIn({
 if (data) {
   console.log(data.strapiJwt); // Use this for Strapi API requests
 }
+```
+
+#### Sign Out
+
+```typescript
+  await authClient.signOut() // This method only works for a regular strategy. There will be a separate endpoint for the refresh token.
 ```
 
 #### Forgot Password
@@ -136,7 +155,7 @@ const { data, error } = await authClient.strapiAuth.changePassword({
 | `userFieldsMap` | `object` | No | Map additional Strapi user fields to Better Auth user object |
 | `signInAfterReset` | `boolean` | No | Automatically sign in users after password reset (default: `false`) |
 | `sessionHook` | `function` | No | Custom function to extend session data with additional information |
-| `refreshStrategy` | `boolean` | No | Choosing a refresh token strategyn |
+| `refreshStrategy` | `boolean` | No | Choosing a refresh token strategyn. [jwtManagement](https://docs.strapi.io/cms/features/users-permissions#jwt-management-modes) |
 | `accessTokenLifespan` | `number` | No | Choosing the token lifetime for the refreshToken strategy at which the token will be updated. |
 
 ## Endpoints
