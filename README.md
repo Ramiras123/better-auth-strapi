@@ -11,8 +11,10 @@ A [Better Auth](https://better-auth.com) plugin that enables authentication usin
 - 📝 User registration through Strapi
 - 🔑 Password reset and update functionality
 - 🎣 Custom session hooks for extended user data
+- 🔒 Support for the refresh jwt strategy
 - 🔄 Seamless integration with Better Auth
 - 📦 TypeScript support with full type safety
+- ⌛ Session memorization and various customizations of the session storage format
 
 ## Installation
 
