@@ -5,6 +5,7 @@ import forgotPassword from "./endpoints/forgot-password";
 import updatePassword from "./endpoints/update-password";
 import changePassword from './endpoints/change-password';
 import refreshJwtUpload from './hooks/refreshJwtUpload';
+import logout from './endpoints/logout';
 
 export interface StrapiAuthOptions {
   strapiUrl: string;
@@ -39,6 +40,7 @@ export const strapiAuth = (options: StrapiAuthOptions) => {
       changeThePassword: changePassword(options),
       forgotPassword: forgotPassword(options),
       updatePassword: updatePassword(options),
+      logoutRefresh: logout(options)
     },
   } satisfies BetterAuthPlugin;
 };

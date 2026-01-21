@@ -1,4 +1,4 @@
-import { createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
+import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 
 import type { StrapiAuthOptions } from "..";
 import { deleteSessionCookie, setSessionCookie } from 'better-auth/cookies';
@@ -18,7 +18,7 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				const refreshToken = sessionUser?.session.strapiRefreshToken
 				if (!refreshToken) {
 					deleteSessionCookie(ctx);
-					return ctx.error("BAD_REQUEST", {
+					throw new APIError("BAD_REQUEST", {
 						message: "Missing refresh_token"
 					});
 				}
@@ -36,7 +36,8 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				if (!strapiResponse.ok) {
 					const errorData = await strapiResponse.json();
 					deleteSessionCookie(ctx);
-					return ctx.error("BAD_REQUEST", errorData.error);
+					throw new APIError("BAD_REQUEST", errorData.error)
+					// return ctx.error("BAD_REQUEST", errorData.error);
 				}
 
 				const strapiSession = await strapiResponse.json();

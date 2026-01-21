@@ -19,7 +19,7 @@ export default function signUp(options: StrapiAuthOptions) {
         },
         async (ctx) => {
             const headers = new Headers();
-            const { callbackUrl, remember, email, password, username } = ctx.body;
+            const { callbackUrl, email, password, username } = ctx.body;
             headers.append("Content-Type", "application/json");
             if (options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
 
