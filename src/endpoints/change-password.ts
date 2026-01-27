@@ -1,8 +1,9 @@
-import { createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
+import { createAuthEndpoint } from "better-auth/api";
 import { z } from "zod";
 
-import type { StrapiAuthOptions } from "..";
 import { setStrapiSession } from "../lib/session";
+import { getStrapiSession } from '../lib/getSession';
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
 export default function changePassword(options: StrapiAuthOptions) {
 	return createAuthEndpoint(
@@ -20,7 +21,7 @@ export default function changePassword(options: StrapiAuthOptions) {
 			const { currentPassword, password, passwordConfirmation, callbackUrl } = ctx.body;
 			const headers = new Headers();
 			headers.append("Content-Type", "application/json");
-			const sessionUser = await getSessionFromCtx(ctx);
+			const sessionUser = await getStrapiSession(ctx);
 			
 			if (sessionUser?.session.strapiJwt) headers.append("Authorization", `Bearer ${sessionUser?.session.strapiJwt}`);
 

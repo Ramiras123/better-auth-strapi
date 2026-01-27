@@ -1,8 +1,9 @@
-import { createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
+import { createAuthEndpoint } from "better-auth/api";
 
-import type { StrapiAuthOptions } from "..";
 import { deleteSessionCookie } from 'better-auth/cookies';
 import z from 'zod';
+import { getStrapiSession } from '../lib/getSession';
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
 export default function logout(options: StrapiAuthOptions) {
 	return createAuthEndpoint(
@@ -15,7 +16,7 @@ export default function logout(options: StrapiAuthOptions) {
 		},
 		async (ctx) => {
 			const { callbackUrl } = ctx.body;
-			const sessionUser = await getSessionFromCtx(ctx);
+			const sessionUser = await getStrapiSession(ctx);
 			const headers = new Headers();
 			headers.append("Content-Type", "application/json");
 			if (sessionUser?.session.strapiJwt) headers.append("Authorization", `Bearer ${sessionUser?.session.strapiJwt}`);

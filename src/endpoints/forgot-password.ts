@@ -1,7 +1,6 @@
 import { createAuthEndpoint } from "better-auth/api";
 import { z } from "zod";
-
-import type { StrapiAuthOptions } from "..";
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
 export default function forgotPassword(options: StrapiAuthOptions) {
     return createAuthEndpoint(

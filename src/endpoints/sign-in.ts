@@ -1,8 +1,7 @@
 import { createAuthEndpoint } from "better-auth/api";
 import { z } from "zod";
-
-import type { StrapiAuthOptions } from "..";
 import { setStrapiSession } from "../lib/session";
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
 export default function signIn(options: StrapiAuthOptions) {
     return createAuthEndpoint(
