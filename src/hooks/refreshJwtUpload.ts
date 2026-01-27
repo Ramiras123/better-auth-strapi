@@ -1,20 +1,21 @@
-import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
-
-import type { StrapiAuthOptions } from "..";
+import { APIError } from "better-auth/api";
+import { createAuthMiddleware } from "better-auth/plugins"
 import { deleteSessionCookie, setSessionCookie } from 'better-auth/cookies';
+import { GenericEndpointContext } from 'better-auth';
+import { getStrapiSession } from '../lib/getSession';
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
 export default function refreshJwtUpload(options: StrapiAuthOptions) {
-	return createAuthMiddleware(async (ctx) => {
+	return createAuthMiddleware(async (ctx: GenericEndpointContext) => {
 		if (options.refreshStrategy) {
-			const sessionUser = await getSessionFromCtx(ctx);
+			const sessionUser = await getStrapiSession(ctx);
+
 			const accessTokenLifespan = sessionUser?.session.accessTokenLifespan
-			const lifespanDate = accessTokenLifespan instanceof Date
-				? accessTokenLifespan
-				: new Date(accessTokenLifespan);
+			const lifespanDate = accessTokenLifespan
 			const tokenLife = options.accessTokenLifespan ? options.accessTokenLifespan
 				: 30 * 60 * 1000
 
-			if (((lifespanDate.getTime() - Date.now() <= (tokenLife) / 2))) {
+			if ((lifespanDate && (new Date(lifespanDate).getTime() - Date.now() <= (tokenLife) / 2))) {
 				const refreshToken = sessionUser?.session.strapiRefreshToken
 				if (!refreshToken) {
 					deleteSessionCookie(ctx);
@@ -36,8 +37,8 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 				if (!strapiResponse.ok) {
 					const errorData = await strapiResponse.json();
 					deleteSessionCookie(ctx);
-					throw new APIError("BAD_REQUEST", errorData.error)
-					// return ctx.error("BAD_REQUEST", errorData.error);
+					// throw new APIError("BAD_REQUEST", errorData.error)
+					return ctx.error("BAD_REQUEST", errorData.error);
 				}
 
 				const strapiSession = await strapiResponse.json();
