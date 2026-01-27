@@ -1,13 +1,8 @@
 import { generateId, GenericEndpointContext } from "better-auth";
 import { setSessionCookie } from "better-auth/cookies";
+import { StrapiSession } from '../type/StrapiSession';
+import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
-import type { StrapiAuthOptions } from "..";
-
-interface StrapiSession {
-    user: any;
-    jwt: string;
-    refreshToken?: string;
-}
 
 export const setStrapiSession = async (strapiSession: StrapiSession, options: StrapiAuthOptions, ctx: GenericEndpointContext) => {
     const { user: strapiUser, jwt: strapiJwt, refreshToken: strapiRefreshToken } = strapiSession;
@@ -43,6 +38,7 @@ export const setStrapiSession = async (strapiSession: StrapiSession, options: St
     // Map user object from Strapi data
     const user = {
         id: strapiUser.id.toString(),
+        documentId: strapiUser.documentId,
         email: strapiUser.email,
         name: strapiUser.username,
         emailVerified: strapiUser.confirmed,
