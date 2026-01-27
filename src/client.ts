@@ -6,9 +6,6 @@ import type { StrapiAuth } from "./index.ts";
 export const strapiAuthClient = () => {
   return {
     id: "strapi-auth",
-    $InferServerPlugin: {} as StrapiAuth,
-    pathMethods: {
-      "/strapi-auth/change-password": "POST"
-    }
+    $InferServerPlugin: {} as StrapiAuth
   } satisfies BetterAuthClientPlugin;
 };

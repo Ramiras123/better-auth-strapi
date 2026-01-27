@@ -1,6 +1,6 @@
 {
 	"name": "@ramiras123/better-auth-strapi",
-	"version": "0.1.5-alpha",
+	"version": "0.2.1",
 	"description": "A Better Auth plugin to authenticate with Strapi and refreshToken",
 	"author": "@douweapausma and @ramiras123",
 	"type": "module",
@@ -27,7 +27,7 @@
 		"prepublishOnly": "npm run build"
 	},
 	"dependencies": {
-		"better-auth": "^1.5.0-beta.9",
+		"better-auth": "^1.4.17",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {
@@ -45,6 +45,6 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ramiras123/better-auth-strapi"
+		"url": "git+https://github.com/ramiras123/better-auth-strapi.git"
 	}
 }
