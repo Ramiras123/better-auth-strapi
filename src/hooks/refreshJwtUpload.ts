@@ -11,11 +11,9 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 			const sessionUser = await getStrapiSession(ctx);
 
 			const accessTokenLifespan = sessionUser?.session.accessTokenLifespan
-			const lifespanDate = accessTokenLifespan
 			const tokenLife = options.accessTokenLifespan ? options.accessTokenLifespan
 				: 30 * 60 * 1000
-
-			if ((lifespanDate && (new Date(lifespanDate).getTime() - Date.now() <= (tokenLife) / 2))) {
+			if ((accessTokenLifespan && (new Date(accessTokenLifespan).getTime() - Date.now() <= tokenLife/2))) {
 				const refreshToken = sessionUser?.session.strapiRefreshToken
 				if (!refreshToken) {
 					deleteSessionCookie(ctx);
@@ -47,8 +45,8 @@ export default function refreshJwtUpload(options: StrapiAuthOptions) {
 					...sessionUser.session,
 					strapiJwt: strapiSession.jwt,
 					strapiRefreshToken: strapiSession.refreshToken,
-					accessTokenLifespan: options.accessTokenLifespan ? new Date(Date.now() + options.accessTokenLifespan)
-						: new Date(Date.now() + 30 * 60 * 1000) // 30 min
+					accessTokenLifespan: new Date(Date.now() + tokenLife)
+
 				}
 
 				if (typeof options.sessionHook === "function") {
