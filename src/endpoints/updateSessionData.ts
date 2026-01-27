@@ -15,7 +15,7 @@ export default function updateSessionData(options: StrapiAuthOptions) {
 		async (ctx: GenericEndpointContext) => {
 			const sessionUser = await getStrapiSession(ctx);
 			if (!sessionUser) return
-			let populateFields: Record<string,any>[] = [];
+			let populateFields: Record<string, any>[] = [];
 			const populateParams = new URLSearchParams();
 
 			if (options.userFieldsMap) {
@@ -77,9 +77,10 @@ export default function updateSessionData(options: StrapiAuthOptions) {
 			} else {
 				await setSessionCookie(ctx, { session, user }, dontRememberMe);
 			}
-			
-			return { user, session };
 
+			return ctx.json({
+				success: true
+			})
 		}
 	)
 }
