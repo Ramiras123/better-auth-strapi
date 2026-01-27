@@ -31,6 +31,7 @@ Configure the plugin in your Better Auth server configuration:
 ```typescript
 import { betterAuth } from "better-auth";
 import { strapiAuth } from "better-auth-strapi";
+import { inferAdditionalFields } from 'better-auth/client/plugins';
 
 export const auth = betterAuth({
   // ... your other Better Auth config
@@ -55,6 +56,13 @@ export const auth = betterAuth({
         };
       },
     }),
+	inferAdditionalFields({ //Optional: If you need field typing when calling a session
+		user: {
+			firstName: {
+				type: "string"
+			},
+		},
+	})
   ],
 	session: {
 		expiresIn: 60 * 60 * 24 * 30, // 30 days
@@ -81,7 +89,8 @@ export const authClient = createAuthClient({
 	sessionOptions: {
 		refetchInterval: 5*60 // Checking the session on the client once every 5 min
 	},
-  plugins: [strapiAuthClient()],
+  plugins: [strapiAuthClient(),
+			inferAdditionalFields<typeof auth>()], //Optional: If you need field typing when calling a session
 });
 ```
 
@@ -153,6 +162,12 @@ const { data, error } = await authClient.strapiAuth.changePassword({
 })
 ```
 
+#### Update Session Data
+```typescript
+await authClient.strapiAuth.updateSessionData()
+await refetch() // Option: If you need to get new data immediately
+```
+
 ## Configuration Options
 
 ### `StrapiAuthOptions`
@@ -176,6 +191,7 @@ The plugin provides the following authentication endpoints:
 - `POST /strapi-auth/forgot-password` - Request password reset
 - `POST /strapi-auth/update-password` - Reset password with code
 - `POST /strapi-auth/change-password` - Change password
+- `GET /strapi-auth/update-session-data` - Update session data
 
 ## Strapi Setup
 
@@ -191,6 +207,7 @@ Ensure your Strapi instance has the following enabled:
    - `/api/auth/change-password`(change password)
    - `/api/auth/refresh` (refresh jwt Token)
    - `/api/auth/logout` (refresh jwt sign out)
+   - `/api/user/me` (update data and setSession) 
 
 ## TypeScript Support
 
