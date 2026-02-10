@@ -1,5 +1,5 @@
 import { createAuthEndpoint } from "better-auth/api";
-import { z } from "zod";
+import { string, z } from "zod";
 import { setStrapiSession } from '../lib/session';
 import { StrapiAuthOptions } from '../type/StrapiAuthOptions';
 
@@ -8,17 +8,20 @@ export default function signUp(options: StrapiAuthOptions) {
         "/strapi-auth/sign-up",
         {
             method: "POST",
-            body: z.object({
-                email: z.string(),
-                password: z.string(),
-                remember: z.boolean().optional().default(false),
-                username: z.string(),
-                callbackUrl: z.string().optional(),
-            }),
+            body: z.intersection(
+                z.object({
+                    email: z.string(),
+                    password: z.string(),
+                    remember: z.boolean().optional().default(false),
+                    username: z.string(),
+                    callbackUrl: z.string().optional(),
+                }),
+                z.record(z.string(), z.any())
+            ),
         },
         async (ctx) => {
             const headers = new Headers();
-            const { callbackUrl, email, password, username } = ctx.body;
+            const { callbackUrl, email, password, username, remember, ...props } = ctx.body;
             headers.append("Content-Type", "application/json");
             if (options.strapiToken) headers.append("Authorization", `Bearer ${options.strapiToken}`);
 
@@ -28,7 +31,7 @@ export default function signUp(options: StrapiAuthOptions) {
                 {
                     method: "POST",
                     headers,
-                    body: JSON.stringify({ email, password, username }),
+                    body: JSON.stringify({ email, password, username, ...props }),
                 }
             );
 
