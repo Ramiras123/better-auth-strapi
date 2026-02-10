@@ -8,7 +8,7 @@ A [Better Auth](https://better-auth.com) plugin that enables authentication usin
 ## Features
 
 - 🔐 Sign in with Strapi credentials
-- 📝 User registration through Strapi
+- 📝 User registration via Strapi with extended fields
 - 🔑 Password reset and update functionality
 - 🎣 Custom session hooks for extended user data
 - 🔒 Support for the refresh jwt strategy
@@ -55,14 +55,7 @@ export const auth = betterAuth({
           customData: "value",
         };
       },
-    }),
-	inferAdditionalFields({ //Optional: If you need field typing when calling a session
-		user: {
-			firstName: {
-				type: "string"
-			},
-		},
-	})
+    })
   ],
 	session: {
 		expiresIn: 60 * 60 * 24 * 30, // 30 days
@@ -75,6 +68,8 @@ export const auth = betterAuth({
 		}
 	},
 });
+
+export type Session = typeof auth.$Infer.Session
 ```
 
 ### Client Setup
@@ -103,7 +98,9 @@ const { data, error } = await authClient.strapiAuth.signUp({
   email: "user@example.com",
   password: "securePassword123",
   username: "user",
-  remember: false // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
+  remember: false, // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
+   fullname: "User" // You can specify other parameters, but you need to expand them in the strapi itself.
+
 });
 ```
 
@@ -113,10 +110,10 @@ const { data, error } = await authClient.strapiAuth.signUp({
 const { data, error } = await authClient.strapiAuth.signIn({
   identifier: "user@example.com", // Email or username
   password: "securePassword123",
-  remember: false // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
-});
-
+  remember: false, // Optional: Save the session in the browser or not. If false is selected, the session lasts for 1 day regardless of the strategy and ends when the browser is closed. If true is selected, the session lives for 30 days.
 // The response includes the Strapi JWT for making authenticated Strapi API calls
+})
+
 if (data) {
   console.log(data.strapiJwt); // Use this for Strapi API requests
 }
@@ -131,7 +128,12 @@ await authClient.signOut() // This method only works for a regular strategy. The
 #### Logout
 ```typescript
 await authClient.strapiAuth.logout({ // Only refresh token sign out
-	callbackUrl: "/" // required
+	callbackUrl: "/", // required
+	fetchOptions: {
+			onSuccess: () => { // Processing for successful exit
+				refetch();
+			}
+		}
 })
 ```
 
@@ -164,8 +166,13 @@ const { data, error } = await authClient.strapiAuth.changePassword({
 
 #### Update Session Data
 ```typescript
-await authClient.strapiAuth.updateSessionData()
-await refetch() // Option: If you need to get new data immediately
+await authClient.strapiAuth.updateSessionData({
+	fetchOptions: {
+		onSuccess: async () => { // Option: If you need to get new data immediately
+			await refetch();
+		}
+	}
+}); 
 ```
 
 ## Configuration Options
