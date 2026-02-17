@@ -1,5 +1,4 @@
-import { APIError } from "better-auth/api";
-import { createAuthMiddleware } from "better-auth/plugins"
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { deleteSessionCookie, setSessionCookie } from 'better-auth/cookies';
 import { GenericEndpointContext } from 'better-auth';
 import { getStrapiSession } from '../lib/getSession';
