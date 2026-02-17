@@ -51,7 +51,7 @@ export const strapiAuth = (options: StrapiAuthOptions) => {
     endpoints: {
       signIn: signIn(options),
       signUp: signUp(options),
-      changeThePassword: changePassword(options),
+      changePassword: changePassword(options),
       forgotPassword: forgotPassword(options),
       updatePassword: updatePassword(options),
       logoutRefresh: logout(options),

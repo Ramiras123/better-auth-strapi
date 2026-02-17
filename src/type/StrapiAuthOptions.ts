@@ -8,6 +8,7 @@ export interface StrapiAuthOptions {
 	};
 	signInAfterReset?: boolean;
 	refreshStrategy?: boolean;
+	requireEmailVerification?: boolean;
 	accessTokenLifespan?: number; // millisecond  default(30 min) work if refreshStrategy: true
 	sessionHook?: (session: {
 		session: Session & Record<string, any>;

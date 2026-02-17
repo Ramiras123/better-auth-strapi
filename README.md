@@ -41,6 +41,7 @@ export const auth = betterAuth({
       strapiToken: process.env.STRAPI_API_TOKEN, // Optional: API token for authenticated requests
       signInAfterReset: true, // Optional: Auto sign-in after password reset
       refreshStrategy: false, // Optional: Choosing the token receipt method
+      requireEmailVerification?: true,  // Optional: Choosing an email confirmation strategy. In this case, no session is created during registration.
       accessTokenLifespan: 30*1000, // Optional: In milliseconds. Defines the lifetime of the jwt token
       userFieldsMap: {
         // Optional: Map additional Strapi user fields

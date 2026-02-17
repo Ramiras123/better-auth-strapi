@@ -42,15 +42,22 @@ export default function signUp(options: StrapiAuthOptions) {
             }
 
             const strapiSession = await strapiResponse.json();
-            const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
+            if (!options.requireEmailVerification) {
+                const { user, session, strapiJwt } = await setStrapiSession(strapiSession, options, ctx);
 
-            return ctx.json({
-                redirect: !!callbackUrl,
-                url: callbackUrl,
-                user,
-                session,
-                strapiJwt, // Return Strapi JWT for making Strapi API calls
-            });
+                return ctx.json({
+                    redirect: !!callbackUrl,
+                    url: callbackUrl,
+                    user,
+                    session,
+                    strapiJwt, // Return Strapi JWT for making Strapi API calls
+                });
+            } else {
+                return ctx.json({
+                    redirect: !!callbackUrl,
+                    url: callbackUrl
+                })
+            }
         }
     );
 }
